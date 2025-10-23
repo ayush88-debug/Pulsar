@@ -133,8 +133,6 @@ $(window).on('load', function() {
    * @param {Array} slides - The array of slide objects from Contentful
    */
   function renderHeroSlider(slides) {
-    // This console log is for debugging. 
-    // If the slider is still invisible, check the console!
     console.log('Slides data received:', slides); 
 
     if (!slides || slides.length === 0) {
@@ -147,15 +145,16 @@ $(window).on('load', function() {
 
     const $slider = $(sliderContainer);
     
-    // Clear any static slides from the HTML
+    // 1. Clear any static slides from the HTML
     sliderContainer.innerHTML = '';
 
-    // Generate the HTML for each new slide
+    // 2. Generate the HTML for each new slide
     slides.forEach(slide => {
+      // --- THE TYPO WAS ON THE LINE BELOW ---
       const slideHTML = `
         <div class="slide-item align-v-h">
-          <div class="bg-img"><img src="${slide.backgroundImage.url}" alt="${slide.backgroundImage.description || 'slide'}"></div>
-          <div classcontainer">
+          <div class="bg-img" style="background-image: url('${slide.backgroundImage.url}')"></div>
+          <div class="container"> 
             <div class="row align-items-center">
               <div class="col-sm-12 col-md-12 col-lg-12 col-xl-7">
                 <div class="slide__content">
@@ -177,10 +176,7 @@ $(window).on('load', function() {
       sliderContainer.insertAdjacentHTML('beforeend', slideHTML);
     });
 
-    // --- CRITICAL FIX ---
-    // Now that the HTML is injected, we initialize Slick using the
-    // options from the original index.html data-slick attribute.
-    // The 'unslick' logic is GONE because main.js is no longer interfering.
+    // 3. Re-initialize Slick with the new dynamic content.
     $slider.slick({
       slidesToShow: 1,
       arrows: true,
