@@ -154,8 +154,8 @@ $(window).on('load', function() {
     slides.forEach(slide => {
       const slideHTML = `
         <div class="slide-item align-v-h">
-          <div class="bg-img"><img src="${slide.backgroundImage.url}" alt="${slide.backgroundImage.description || 'slide'}"></div>
-          <div classcontainer">
+          <div class="bg-img" style="background-image: url('${slide.backgroundImage.url}')"></div>
+          <div class="container">
             <div class="row align-items-center">
               <div class="col-sm-12 col-md-12 col-lg-12 col-xl-7">
                 <div class="slide__content">
