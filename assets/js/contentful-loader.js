@@ -51,6 +51,14 @@ $(window).on('load', function() {
               }
             }
           }
+            featuresCollection {
+                items {
+                title
+                description
+                linkText
+                linkUrl
+                }
+            }
         }
       }
     `,
@@ -87,6 +95,13 @@ $(window).on('load', function() {
 
       // 2. Render the Hero Slider
       renderHeroSlider(pageData.heroSlidesCollection.items);
+      if (pageData.featuresCollection && pageData.featuresCollection.items) {
+            renderFeaturesCarousel(pageData.featuresCollection.items);
+        } else {
+            console.warn("Features data missing from response.");
+        }
+
+
     } catch (error) {
       console.error('Error fetching data from Contentful:', error);
     }
@@ -186,6 +201,61 @@ $(window).on('load', function() {
       cssEase: 'linear'
     });
   }
+
+  /**
+   * Populates the features carousel and initializes it
+   * @param {Array} features - The array of feature objects
+   */
+  function renderFeaturesCarousel(features) {
+  console.log('Rendering features:', features);
+
+  const container = document.getElementById('features-carousel-container');
+  if (!container) {
+    console.error("Features carousel container not found in HTML.");
+    return;
+  }
+
+  const $container = $(container);
+  container.innerHTML = '';
+
+  features.forEach(feature => {
+    const title = feature.title || 'Default Title';
+    const description = feature.description || '';
+    const linkUrl = feature.linkUrl || '#';
+    const linkText = feature.linkText || 'Read More';
+
+    const featureHTML = `
+      <div class="feature-item d-flex">
+        <div class="feature__content">
+          <h4 class="feature__title">${title}</h4>
+          ${description ? `<p class="feature__desc">${description}</p>` : ''}
+          <a href="${linkUrl}" class="btn btn__link btn__secondary">
+            <span>${linkText}</span>
+            <i class="icon-arrow-right"></i>
+          </a>
+        </div>
+      </div>`;
+    container.insertAdjacentHTML('beforeend', featureHTML);
+  });
+
+    setTimeout(function() {
+    if (!$container.hasClass('slick-initialized')) {
+        $container.slick({
+            // ... slick options ...
+        });
+        console.log("Features carousel initialized.");
+    } else {
+        $container.slick('refresh');
+        console.warn("Features carousel was already initialized. Refreshing.");
+    }
+    }, 100);
+
+    setTimeout(() => {
+    $container.slick('setPosition');
+    }, 500);
+    }
+
+
   // Run the fetch function
   fetchContentfulData();
 }); // <-- Make sure this closing tag is correct!
